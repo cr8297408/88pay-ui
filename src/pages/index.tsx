@@ -1,3 +1,4 @@
+import Modal from '@/components/modal';
 import axios from 'axios';
 import React, { FormEventHandler, useState } from 'react';
 import styled from 'styled-components';
@@ -58,6 +59,7 @@ const StyleSignIn = styled.div`
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showModal, setShowModal] = useState(false);
   const updateEmail = (value: string) => {
     setEmail(value);
   };
@@ -66,51 +68,79 @@ export default function SignIn() {
   };
   const login: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    axios
-      .post('http://localhost:4003/signIn', {
-        email, password
-      })
-      .then((response) => {
-        console.log(response);
-        //TODO: SHOW MODAL WITH RESPONSE
-      });
+    // axios
+    //   .post('http://localhost:4003/signIn', {
+    //     email, password
+    //   })
+    //   .then((response) => {
+    //     console.log(response);
+    //     //TODO: SHOW MODAL WITH RESPONSE
+    //   });
     // console.log(e.target);
+  };
+
+  const showModalFunc = () => {
+    setShowModal(!showModal);
   };
   return (
     <StyleSignIn className="container">
       <div className="container">
-        <h1 className="title">Bienvenido a 88Pay</h1>
-        <form onSubmit={login} className="form">
-          <label className="form-label" htmlFor="email">
-            Correo:{' '}
-          </label>
-          <input
-            className="form-input"
-            id="email"
-            type="email"
-            placeholder="Correo electrónico"
-            onChange={(e) => {
-              const newvalue = e.target.value;
-              updateEmail(newvalue);
+        {!showModal ? (
+          <>
+            <h1 className="title">Bienvenido a 88Pay</h1>
+            <form onSubmit={login} className="form">
+              <label className="form-label" htmlFor="email">
+                Correo:{' '}
+              </label>
+              <input
+                className="form-input"
+                id="email"
+                type="email"
+                placeholder="Correo electrónico"
+                onChange={(e) => {
+                  const newvalue = e.target.value;
+                  updateEmail(newvalue);
+                }}
+              />
+              <label className="form-label" htmlFor="password">
+                Contraseña:{' '}
+              </label>
+              <input
+                className="form-input"
+                id="password"
+                type="password"
+                placeholder="Contraseña"
+                onChange={(e) => {
+                  const newvalue = e.target.value;
+                  updatePassword(newvalue);
+                }}
+              />
+              <button
+                className="form-button"
+                type="submit"
+                onClick={showModalFunc}
+              >
+                Entrar
+              </button>
+            </form>
+          </>
+        ) : (
+          <></>
+        )}
+        {showModal ? (
+          <Modal
+            response={{
+              token: 'eylskdladlaskdladlajsdtokenjwtkjs12lkadlkdajkflkdaksaskdeyur',
+              user: {
+                email,
+                password
+              },
             }}
+            onclick={showModalFunc}
           />
-          <label className="form-label" htmlFor="password">
-            Contraseña:{' '}
-          </label>
-          <input
-            className="form-input"
-            id="password"
-            type="password"
-            placeholder="Contraseña"
-            onChange={(e) => {
-              const newvalue = e.target.value;
-              updatePassword(newvalue);
-            }}
-          />
-          <button className="form-button" type="submit">
-            Entrar
-          </button>
-        </form>
+        ) : (
+          <></>
+        )}
       </div>
     </StyleSignIn>
   );
